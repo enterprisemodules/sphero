@@ -9,6 +9,7 @@ class Sphero
       @seq    = seq
       @data   = data
       @did    = 0x00
+      puts self.inspect
     end
 
     def header
@@ -23,10 +24,12 @@ class Sphero
     def response header, body
       name = self.class.name.split('::').last
       if Response.const_defined?(name)
-        Response.const_get(name).new header, body
+        instance = Response.const_get(name).new header, body
       else
-        Response.new header, body
+        instance = Response.new header, body
       end
+      puts instance.inspect
+      instance
     end
 
     def packet_header
@@ -148,9 +151,9 @@ class Sphero
 
     GYRO_AXIS_H_FILTERED = 0x0000_0001
     GYRO_AXIS_M_FILTERED = 0x0000_0002
-    GYRO_AXIS_L_FILTERED = 0x0000_0004 
+    GYRO_AXIS_L_FILTERED = 0x0000_0004
     LEFT_MOTOR_BACK_EMF_FILTERED = 0x0000_0020
-    RIGHT_MOTOR_BACK_EMF_FILTERED = 0x0000_0040 
+    RIGHT_MOTOR_BACK_EMF_FILTERED = 0x0000_0040
     MAGNETOMETER_AXIS_Z_FILTERED = 0x0000_0080
     MAGNETOMETER_AXIS_Y_FILTERED = 0x0000_0100
     MAGNETOMETER_AXIS_X_FILTERED = 0x0000_0200

@@ -327,10 +327,17 @@ class Sphero
   end
 
   def read_next_chunk(len, blocking=false)
-    data = nil
+    data = ''
     begin
       if blocking || is_windows?
-        data = @sp.read(len)
+        iteration = 1
+        while len > 0 do
+          iteration++
+          raise('Error reading from serial port') if iteration > 10
+          ret = @sp.read(len)
+          data += ret
+          len -= ret.length
+        end
       else
         data = @sp.read_nonblock(len)
       end
@@ -341,8 +348,8 @@ class Sphero
       puts e.backtrace.inspect
       return nil
     end
-    data
-  end  
+    data.empty? ? nil : data
+  end
 
   COLORS = {
     'aliceblue'            => {:r => 240, :g => 248, :b => 255},
