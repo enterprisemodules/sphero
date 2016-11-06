@@ -42,6 +42,7 @@ class Sphero
       initialize_serialport dev
     else
       @sp = dev
+      @sp.read(10000) # Erase a data still in buffers
     end
 
     @dev  = 0x00
