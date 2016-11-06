@@ -102,6 +102,12 @@ class Sphero
     return sync_response packet.seq
   end
 
+  def read_locator
+    packet = Request::ReadLocator.new(@seq)
+    queue_packet packet
+    return sync_response packet.seq
+  end
+
   def auto_reconnect= time_s
     queue_packet Request::SetAutoReconnect.new(@seq, limit1(time_s) )
   end

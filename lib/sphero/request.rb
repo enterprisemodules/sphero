@@ -68,6 +68,7 @@ class Sphero
       }
     end
 
+    ReadLocator      = make_command Sphero, 0x15
     SetBackLEDOutput = make_command Sphero, 0x21
     SetRotationRate  = make_command Sphero, 0x03
     SetRGB           = make_command Sphero, 0x20

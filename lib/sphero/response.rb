@@ -24,7 +24,7 @@ class Sphero
     end
 
     def valid?
-      @header && @body  
+      @header && @body
     end
 
     def empty?
@@ -44,8 +44,10 @@ class Sphero
     end
 
     class GetAutoReconnect < Response
-      def time
-        body[1]
+      attr_reader :time
+      def initialize header, body
+        super
+        @time = body[1]
       end
     end
 
@@ -56,32 +58,24 @@ class Sphero
       LOW      = 0x03
       CRITICAL = 0x04
 
-      def body
-        @body.unpack 'CCnnnC'
-      end
+      attr_reader :rec_ver, :power_state, :batt_voltage, :num_charges, :time_since_charge
 
-      def rec_ver
-        body[0]
-      end
-
-      def power_state
-        body[1]
-      end
-
-      # Voltage * 100
-      def batt_voltage
-        body[2]
-      end
-
-      def num_charges
-        body[3]
-      end
-
-      # Time since awakened in seconds
-      def time_since_charge
-        body[4]
+      def initialize header, body
+        super
+        @rec_ver, @power_state, @batt_voltage, @num_charges, @time_since_charge = @body.unpack 'CCnnnC'
       end
     end
+
+    class ReadLocator < Response
+
+      attr_reader :xpos, :ypos, :xvel, :yvel, :sof
+
+      def initialize header, body
+        super
+        @xpos, @ypos, @xvel, @yvel, @sof = @body.unpack 'CCnnnC'
+      end
+    end
+
 
     class GetBluetoothInfo < Response
       def name
@@ -94,9 +88,12 @@ class Sphero
     end
 
     class GetRGB < Response
-      def r; body[0]; end
-      def g; body[1]; end
-      def b; body[2]; end
+      attr_reader :r, :g, :b
+
+      def initialize header, body
+        super
+        @r, @g, @b = body
+      end
     end
 
     class AsyncResponse < Response
@@ -163,40 +160,11 @@ class Sphero
     end
 
     class CollisionDetected < AsyncResponse
-      def body
-        @body.unpack 'nnnCnnCN'
-      end
+      attr_reader :x, :y, :z, :axis, :x_magnitude, :y_magnitude, :speed, :timestamp
 
-      def x
-        body[0]
-      end
-
-      def y
-        body[1]
-      end
-
-      def z
-        body[2]
-      end
-
-      def axis
-        body[3]
-      end
-
-      def x_magnitude
-        body[4]
-      end
-
-      def y_magnitude
-        body[5]
-      end
-
-      def speed
-        body[6]
-      end
-
-      def timestamp
-        body[7]
+      def initialize header, body
+        super
+        @x, @y, @z, @axis, @x_magnitude, @y_magnitude, @speed, @timestamp = @body.unpack 'nnnCnnCN'
       end
     end
   end
